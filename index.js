@@ -1,15 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import 'dotenv/config';
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI).then(()=>
-console.log("Mongodb connected"))
+mongoose.connect("mongodb+srv://dharaniwebdev_db_user:V9BGKQAGp3hvPnYJ@cluster0.zwyftwm.mongodb.net/productdb?retryWrites=true&w=majority&appName=Cluster0")
+.then(()=>console.log("Mongodb connected"))
 .catch((er)=> console.log(er))
 
 // Product model
@@ -31,10 +31,13 @@ app.get("/products", async (req, res) => {
 // POST new product
 app.post("/products", async (req, res) => {
   try {
+    console.log("data received",req.body)
     const newProduct = new Product(req.body);
-    await newProduct.save();
-    res.json(newProduct);
+   const saved = await newProduct.save();
+   console.log("saved to atlas",saved)
+    res.json(saved);
   } catch (err) {
+    console.log("error saving",err)
     res.status(500).json({ error: err.message });
   }
 });
